@@ -2,7 +2,8 @@
  - Repository for my solutions to AQA's paper 1 pre release C# program's **practice** questions.
  - Contains a variety of tasks in increasing complexity.
  - All solutions are in their own seperate class / file.
- - To run solution X, change `placeholder bc im on the toilet` to `placeholder lawl`.
+ - To run solution X, change `line 9` in `program.cs` to `QX.Start();`.
+     - AKA - just change the number.
  - I programmed all of these for practice for the real thing.
  - The prerelease program should be worth about 40% of 2025's Paper 1 marks.
 
