@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace TargetClearCS
 {
-    public class Q2
+    public class Q3
     {
         static Random RGen = new Random();
 
@@ -57,10 +57,6 @@ namespace TargetClearCS
                 Console.Write("Enter an expression: ");
                 UserInput = Console.ReadLine();
                 Console.WriteLine();
-                if (UserInput.ToUpper() == "QUIT")
-                {
-                    break;
-                }
                 if (CheckIfUserInputValid(UserInput))
                 {
                     UserInputInRPN = ConvertToRPN(UserInput);
@@ -73,7 +69,6 @@ namespace TargetClearCS
                         }
                     }
                 }
-                Console.WriteLine("The expression you entered is not valid for any targets");
                 Score--;
                 if (Targets[0] != -1)
                 {
@@ -87,6 +82,7 @@ namespace TargetClearCS
             Console.WriteLine("Game over!");
             DisplayScore(Score);
         }
+        
         static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
         {
             int UserInputEvaluation = EvaluateRPN(UserInputInRPN);
