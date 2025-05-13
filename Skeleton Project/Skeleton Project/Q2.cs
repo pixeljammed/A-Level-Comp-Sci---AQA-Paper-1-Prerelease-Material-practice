@@ -57,10 +57,6 @@ namespace TargetClearCS
                 Console.Write("Enter an expression: ");
                 UserInput = Console.ReadLine();
                 Console.WriteLine();
-                if (UserInput.ToUpper() == "QUIT")
-                {
-                    break;
-                }
                 if (CheckIfUserInputValid(UserInput))
                 {
                     UserInputInRPN = ConvertToRPN(UserInput);
@@ -71,9 +67,21 @@ namespace TargetClearCS
                             RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed);
                             NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber);
                         }
+                        else
+                        {
+                            Console.WriteLine("The expression you entered does not evaluate to a target!");
+                        }
                     }
+                    else
+                    {
+                        Console.WriteLine("The numbers you entered were not all allowed!");
+                    }    
                 }
-                Console.WriteLine("The expression you entered is not valid for any targets");
+                else
+                {
+                    Console.WriteLine("The expression you entered was not a valid infix expression!");
+                }
+
                 Score--;
                 if (Targets[0] != -1)
                 {
@@ -87,11 +95,12 @@ namespace TargetClearCS
             Console.WriteLine("Game over!");
             DisplayScore(Score);
         }
+        
         static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
         {
             int UserInputEvaluation = EvaluateRPN(UserInputInRPN);
             bool UserInputEvaluationIsATarget = false;
-            if (UserInputEvaluation != -1)
+            if (UserInputEvaluation != -1) // -1 is returned for impossibly calculated results, i.e: division by 0
             {
                 for (int Count = 0; Count < Targets.Count; Count++)
                 {
@@ -102,6 +111,10 @@ namespace TargetClearCS
                         UserInputEvaluationIsATarget = true;
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine("Mathmatical calculation error!");
             }
             return UserInputEvaluationIsATarget;
         }
@@ -336,7 +349,14 @@ namespace TargetClearCS
         
         static bool CheckIfUserInputValid(string UserInput)
         {
-            return Regex.IsMatch(UserInput, @"^([0-9]+[\+\-\*\/])+[0-9]+$");
+            if (Regex.IsMatch(UserInput, @"\/0+")) //To stop the user from entering a divide by zero value
+            {
+                return false;
+            }
+            else
+            {
+                return Regex.IsMatch(UserInput, @"^([0-9]+[\+\-\*\/])+[0-9]+$");
+            }
         }
         
         static int GetTarget(int MaxTarget)
