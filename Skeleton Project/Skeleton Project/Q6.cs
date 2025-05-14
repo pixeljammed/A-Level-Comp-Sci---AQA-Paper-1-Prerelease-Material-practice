@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace TargetClearCS
 {
-    public class Q5
+    public class Q6
     {
         static Random RGen = new Random();
 
@@ -85,8 +85,7 @@ namespace TargetClearCS
         
         static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
         {
-            int OperatorCount = GetTotalNumberOfOperators(UserInputInRPN);
-            int UserInputEvaluation = EvaluateRPN(UserInputInRPN); // EvaluateRPN clears UserInputInRPN! Nice! Why?
+            int UserInputEvaluation = EvaluateRPN(UserInputInRPN);
             bool UserInputEvaluationIsATarget = false;
             if (UserInputEvaluation != -1)
             {
@@ -95,7 +94,6 @@ namespace TargetClearCS
                     if (Targets[Count] == UserInputEvaluation)
                     {
                         Score += 2;
-                        Score += 2 * OperatorCount;
                         Targets[Count] = -1;
                         UserInputEvaluationIsATarget = true;
                     }
@@ -103,20 +101,6 @@ namespace TargetClearCS
             }
             return UserInputEvaluationIsATarget;
         }
-
-        static int GetTotalNumberOfOperators(List<string> UserInputInRPN)
-        {
-            int Count = 0;
-            foreach (string digit in UserInputInRPN)
-            {
-                if (digit == "+" || digit == "-" || digit == "*" || digit == "/")
-                {
-                    Count++;
-                }
-            }
-            return Count;
-        }
-        
         
         static void RemoveNumbersUsed(string UserInput, int MaxNumber, List<int> NumbersAllowed)
         {
