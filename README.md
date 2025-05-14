@@ -14,3 +14,6 @@
 > - The content on this repository is provided as-is with no support, and serves the purpose of education, by providing a resource for other A level students to learn from.
 > - Likewise, I do not claim the code on this repository is perfect nor would score full marks in a similar question in the exam.
 > - ZigZag Education's propriatory content is not included with this repository. I will not provide download links to it either, just in case.
+
+## Cheers!
+![genius](https://github.com/user-attachments/assets/eff7f195-b1c5-44e9-b6aa-f2a815edde74)
