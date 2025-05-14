@@ -6,12 +6,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace TargetClearCS
 {
-    public class Q6
+    public class Q7
     {
         static Random RGen = new Random();
 
@@ -57,35 +58,33 @@ namespace TargetClearCS
                 Console.Write("Enter an expression: ");
                 UserInput = Console.ReadLine();
                 Console.WriteLine();
-                if (UserInput.ToLower() == "move")
-                {
-                    MoveTargetsBack(Targets);
-                    Score--;
-                }
-                else if (CheckIfUserInputValid(UserInput))
+                if (CheckIfUserInputValid(UserInput))
                 {
                     UserInputInRPN = ConvertToRPN(UserInput);
                     if (CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber))
                     {
-                        if (CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, ref Score))
+                        if (CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, ref Score, NumbersAllowed))
                         {
                             RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed);
                             NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber);
                         }
                     }
-                    UpdateTargets(Targets, TrainingGame, MaxTarget);
                 }
                 Score--;
                 if (Targets[0] != -1)
                 {
                     GameOver = true;
                 }
+                else
+                {
+                    UpdateTargets(Targets, TrainingGame, MaxTarget);
+                }
             }
             Console.WriteLine("Game over!");
             DisplayScore(Score);
         }
         
-        static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
+        static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score, List<int> NumbersAllowed)
         {
             int UserInputEvaluation = EvaluateRPN(UserInputInRPN);
             bool UserInputEvaluationIsATarget = false;
@@ -98,10 +97,38 @@ namespace TargetClearCS
                         Score += 2;
                         Targets[Count] = -1;
                         UserInputEvaluationIsATarget = true;
+                        SelectValueFromTarget(UserInputEvaluation, NumbersAllowed);
                     }
                 }
             }
             return UserInputEvaluationIsATarget;
+        }
+
+        static void SelectValueFromTarget(int UserInputEvaluation, List<int> NumbersAllowed)
+        {
+            string choice;
+            Console.WriteLine("Would you like to add this target to your list? (y/n)");
+            choice = Console.ReadLine();
+
+            if (choice == "y")
+            {
+                Console.WriteLine("Would you like to add the full number, or only the first or second digit? (full/first/second)");
+                choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "full":
+                        NumbersAllowed.Add(UserInputEvaluation);
+                        break;
+                    case "first":
+                        int FirstDigit = Convert.ToInt32(Convert.ToString(UserInputEvaluation)[0]);
+                        NumbersAllowed.Add(FirstDigit);
+                        break;
+                    case "second":
+                        int SecondDigit = Convert.ToInt32(Convert.ToString(UserInputEvaluation)[1]);
+                        NumbersAllowed.Add(SecondDigit);
+                        break;
+                }
+            }
         }
         
         static void RemoveNumbersUsed(string UserInput, int MaxNumber, List<int> NumbersAllowed)
@@ -134,12 +161,6 @@ namespace TargetClearCS
             {
                 Targets.Add(GetTarget(MaxTarget));
             }
-        }
-
-        static void MoveTargetsBack(List<int> Targets)
-        {
-            Targets.Insert(0, -1);
-            Targets.RemoveAt(Targets.Count - 1);
         }
         
         static bool CheckNumbersUsedAreAllInNumbersAllowed(List<int> NumbersAllowed, List<string> UserInputInRPN, int MaxNumber)

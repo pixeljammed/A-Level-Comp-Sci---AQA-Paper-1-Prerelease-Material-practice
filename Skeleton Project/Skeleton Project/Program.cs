@@ -6,7 +6,7 @@ namespace SkeletonProject
     {
         static void Main(string[] args)
         {
-            Q5.Start();
+            Q7.Start();
         }
     }
 }
