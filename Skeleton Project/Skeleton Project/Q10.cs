@@ -13,12 +13,21 @@ namespace TargetClearCS
 {
     public class Q10
     {
+        public class UndoState()
+        {
+            public List<int> NumbersAllowed { get; set; }
+            public List<int> Targets { get; set; }
+            public int Score { get; set; }
+        }
+        
+        
         static Random RGen = new Random();
 
         public static void Start()
         {
             List<int> NumbersAllowed = new List<int>();
             List<int> Targets;
+            List<UndoState> UndoStates = new List<UndoState>();
             int MaxNumberOfTargets = 20;
             int MaxTarget;
             int MaxNumber;
@@ -41,11 +50,11 @@ namespace TargetClearCS
                 Targets = CreateTargets(MaxNumberOfTargets, MaxTarget);
             }
             NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber);
-            PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber);
+            PlayGame(Targets, NumbersAllowed, UndoStates, TrainingGame, MaxTarget, MaxNumber);
             Console.ReadLine();
         }
         
-        static void PlayGame(List<int> Targets, List<int> NumbersAllowed, bool TrainingGame, int MaxTarget, int MaxNumber)
+        static void PlayGame(List<int> Targets, List<int> NumbersAllowed, List<UndoState> UndoStates, bool TrainingGame, int MaxTarget, int MaxNumber)
         {
             int Score = 0;
             bool GameOver = false;
@@ -53,6 +62,7 @@ namespace TargetClearCS
             List<string> UserInputInRPN;
             while (!GameOver)
             {
+                AddToUndo(ref UndoStates, NumbersAllowed, Targets, Score);
                 DisplayState(Targets, NumbersAllowed, Score);
                 Console.Write("Enter an expression: ");
                 UserInput = Console.ReadLine();
@@ -77,10 +87,33 @@ namespace TargetClearCS
                 else
                 {
                     UpdateTargets(Targets, TrainingGame, MaxTarget);
+                    Console.WriteLine($"You have {UndoStates.Count()} undos avaliable. Would you like to undo? (y/n)");
+                    UserInput = Console.ReadLine();
+                    if (UserInput.ToUpper() == "Y")
+                    {
+                        UndoLastTurn(UndoStates[UndoStates.Count - 1], ref NumbersAllowed, ref Targets, ref Score);
+                        UndoStates.RemoveAt(UndoStates.Count - 1);
+                    }
                 }
             }
             Console.WriteLine("Game over!");
             DisplayScore(Score);
+        }
+
+        static void AddToUndo(ref List<UndoState> UndoStates, List<int> NumbersAllowed, List<int> Targets, int Score)
+        {
+            UndoState LastTurn = new UndoState();
+            LastTurn.NumbersAllowed = new List<int>(NumbersAllowed); 
+            LastTurn.Targets = new List<int>(Targets);
+            LastTurn.Score = Score;
+            UndoStates.Add(LastTurn);
+        }
+
+        static void UndoLastTurn(UndoState PrevState, ref List<int> NumbersAllowed, ref List<int> Targets, ref int Score)
+        {
+            NumbersAllowed = new List<int>(PrevState.NumbersAllowed);
+            Targets = new List<int>(PrevState.Targets);
+            Score = PrevState.Score;    
         }
         
         static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
@@ -344,6 +377,7 @@ namespace TargetClearCS
         {
             return RGen.Next(MaxNumber) + 1;
         }
+        
         
         static List<int> CreateTargets(int SizeOfTargets, int MaxTarget)
         {
