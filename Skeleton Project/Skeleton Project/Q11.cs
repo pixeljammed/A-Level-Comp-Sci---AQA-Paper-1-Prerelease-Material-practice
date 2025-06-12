@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace TargetClearCS
 {
-    public class BaseCode
+    public class Q11
     {
         static Random RGen = new Random();
 
@@ -49,10 +49,19 @@ namespace TargetClearCS
         {
             int Score = 0;
             bool GameOver = false;
+            bool HelpMode = false;
             string UserInput;
             List<string> UserInputInRPN;
             while (!GameOver)
             {
+                Console.WriteLine("Would you like to enable Help Mode for this round? (y/n)");
+                UserInput = Console.ReadLine();
+                {
+                    if (UserInput.ToUpper() == "Y")
+                    {
+                         GetRandomSuggestions(NumbersAllowed, Targets);
+                    }
+                }
                 DisplayState(Targets, NumbersAllowed, Score);
                 Console.Write("Enter an expression: ");
                 UserInput = Console.ReadLine();
@@ -81,6 +90,51 @@ namespace TargetClearCS
             }
             Console.WriteLine("Game over!");
             DisplayScore(Score);
+        }
+
+        static List<int> GetRandomSuggestions(List<int> NumbersAllowed, List<int> Targets)
+        {
+            int count = 0;
+            int targetsFound = 0;
+            List<int> hintNumbers
+            Random RNG = new Random();
+
+            while (count <= 30 && targetsFound <= 5)
+            {
+                List<int> bag = new List<int>(NumbersAllowed);
+                int num1 = bag[RNG.Next(0, bag.Count()-1)];
+                bag.Remove(num1);
+                int num2 = bag[RNG.Next(0, bag.Count()-1)];
+                bag.Remove(num2);
+                int num3 = bag[RNG.Next(0, bag.Count()-1)];
+                bag.Remove(num3);
+
+                int add2 = num1 + num2;
+                int add3 = num1 + num2 + num3;
+
+                int sub2 = num1 - num2;
+                int sub3 = num1 + num2 - num3;
+
+                int mul2 = num1 * num2;
+                int mul3 = num1 * num2 * num3;
+
+                int div2 = num1 / num2;
+                int div3 = num1 + num2 / num3;
+
+                if (Targets.Contains(add2) || Targets.Contains(sub2) || Targets.Contains(mul2) || Targets.Contains(div2))
+                {
+                    hintNumbers.Append()
+                    targetsFound++;
+                }
+
+                else if (Targets.Contains(add3) || Targets.Contains(sub3) || Targets.Contains(mul3) || Targets.Contains(div3))
+                {
+                    Console.WriteLine($"HINT: Try {num1} or {num2} or {num3}");
+                    targetsFound++;
+                }
+
+                count++;
+            }
         }
         
         static bool CheckIfUserInputEvaluationIsATarget(List<int> Targets, List<string> UserInputInRPN, ref int Score)
@@ -319,17 +373,6 @@ namespace TargetClearCS
                 {
                     MoreDigits = false;
                 }
-
-        public class Passport
-        {
-            public string name { get; set; }
-            public int age { get; set; }
-
-            public static bool Display(string name, int age)
-            {
-                Console.WriteLine($"My name is {name}. I am {age}.");
-            }
-        }
             }
             if (Number == "")
             {
