@@ -1,7 +1,10 @@
+Archived 14/06/25 (exam was 2 days ago bro!)
+
 # A-Level Comp-Sci AQA Paper 1 Prerelease Material practice
 ## Description
  - Repository for my solutions to AQA's paper 1 pre release C# program's **practice** questions.
  - Contains a variety of tasks in increasing complexity.
+ - Done up to Q11
  - All solutions are in their own seperate class / file.
  - To run solution X, change `line 9` in `program.cs` to `QX.Start();`.
      - AKA - just change the number.
